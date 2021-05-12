@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
   name="dbt-ipy",
-  version="0.1.5",
+  version="0.2.0",
   packages=["dbt-ipy"],
   license="GNU GPLv3",
   author="jmriego",
@@ -12,7 +12,7 @@ setup(
   description="IPython magic to use dbt",
   long_description=open("README.rst").read(),
   keywords="ipython dbt sql",
-  install_requires = ['ipython>=1.0', 'dbt>=0.17'],
+  install_requires = ['ipython>=1.0', 'dbt>=0.18'],
   classifiers=[
       "Development Status :: 3 - Alpha",
       "Framework :: IPython",

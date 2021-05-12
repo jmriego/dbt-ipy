@@ -61,7 +61,8 @@ class ServerProcess():
             sock.connect(('localhost', self.port))
         except socket.error:
             return False
-        sock.close()
+        finally:
+            sock.close()
         return True
 
     def _compare_result(self, result):
@@ -425,7 +426,11 @@ class DBTMagics(Magics):
             self._stop()
             proc = ServerProcess(args)
             self.querier = Querier(proc)
-            self.querier.server.start()
+            try:
+                self.querier.server.start()
+            except Exception:
+                return self.querier.server.proc.stdout.read().decode('utf-8')
+
             return(self.querier)
 
     @cell_magic
