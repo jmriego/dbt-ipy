@@ -362,9 +362,12 @@ class Querier:
         if id is not None:
             assert data['id'] == id
         assert data['jsonrpc'] == '2.0'
-        assert 'result' in data
-        assert 'error' not in data
-        return data['result']
+        if 'error' in data or 'result' not in data:
+            raise RuntimeError(
+                'Got invalid response: {}'.format(data)
+            )
+        else:
+            return data['result']
 
     def is_async_result(self, data: Dict[str, Any], id=None) -> str:
         result = self.is_result(data, id)
