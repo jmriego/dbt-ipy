@@ -28,15 +28,18 @@ class ServerProcess():
         self.cmd = ['dbt'] + cmd_args
         parser = argparse.ArgumentParser()
         parser.add_argument('--port', default=8580, type=int)
+        parser.add_argument('--existing', action='store_true')
         args, _ = parser.parse_known_args(cmd_args[1:]) #remove rpc argument
         self.port = args.port
+        self.existing = args.existing
 
     def run(self):
         self.proc = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         return self.proc
 
     def start(self):
-        self.run()
+        if not self.existing:
+            self.run()
         for _ in range(30):
             if self.is_up():
                 break

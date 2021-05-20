@@ -15,6 +15,11 @@ The first thing you'll probably want to do is to run a DBT RPC server in the bac
   %dbt rpc <args>
   (the args will be passed directly to dbt as command line arguments)
 
+The two most important parameters would be:
+
+- ``--port [port_number]`` Passing this parameter will run the DBT RPC on that port. Default is 8580
+- ``--existing`` This will skip creating a new DBT RPC and instead it will connect to an existing one on the specified port
+
 **Compiling queries:**
 
 The sql query in the cell will be compiled with the DBT RPC server and IPython will output the text::
