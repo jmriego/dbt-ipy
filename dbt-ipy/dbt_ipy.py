@@ -441,7 +441,8 @@ class DBTMagics(Magics):
 
     @cell_magic
     def run_sql(self, line, cell):
-        query = cell
+        max_rows = 500
+        query = "select * from ({}) dbt_run_sql limit {}".format(cell, max_rows)
         resp = self.querier.run_sql(query)
         result = self.querier.async_wait_for_result(resp)
         resp_table = result['results'][0]['table']
