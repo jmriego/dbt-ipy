@@ -9,6 +9,8 @@ import socket
 import subprocess
 import time
 from typing import Any, Dict, List, Optional, Union
+import tempfile
+import pyperclip
 
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 from agate import Table
@@ -418,6 +420,7 @@ class DBTMagics(Magics):
         # You must call the parent constructor
         super(DBTMagics, self).__init__(shell)
         atexit.register(self._stop)
+        self.last_result = None
 
     def _stop(self):
         try:
@@ -441,7 +444,8 @@ class DBTMagics(Magics):
 
     @cell_magic
     def run_sql(self, line, cell):
-        query = cell
+        max_rows = 500
+        query = "select * from ({}) dbt_run_sql limit {}".format(cell, max_rows)
         resp = self.querier.run_sql(query)
         result = self.querier.async_wait_for_result(resp)
         resp_table = result['results'][0]['table']
@@ -449,6 +453,7 @@ class DBTMagics(Magics):
         rows_dict = [dict(zip(column_names, row)) for row in resp_table['rows']]
         table_result = Table.from_object(rows_dict)
         table_result.print_table()
+        self.last_result = table_result
         return table_result
 
     @cell_magic
@@ -457,4 +462,18 @@ class DBTMagics(Magics):
         resp = self.querier.compile_sql(query)
         result = self.querier.async_wait_for_result(resp)
         compiled_sql = result['results'][0]['compiled_sql']
+        self.last_result = compiled_sql
         return Sql(compiled_sql)
+
+    @line_magic
+    def dbt_clipboard(self, line):
+        if isinstance(self.last_result, Table):
+            try:
+                fd, path = tempfile.mkstemp()
+                self.last_result.to_csv(path)
+                with open(path) as f:
+                    pyperclip.copy(f.read())
+            finally:
+                os.remove(path)
+        else:
+            pyperclip.copy(self.last_result)
