@@ -10,7 +10,6 @@ import subprocess
 import time
 from typing import Any, Dict, List, Optional, Union
 import tempfile
-import pyperclip
 
 from IPython.core.magic import Magics, cell_magic, line_magic, magics_class
 from agate import Table
@@ -467,6 +466,7 @@ class DBTMagics(Magics):
 
     @line_magic
     def dbt_clipboard(self, line):
+        import pyperclip
         if isinstance(self.last_result, Table):
             try:
                 fd, path = tempfile.mkstemp()
