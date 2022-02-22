@@ -46,3 +46,11 @@ The sql query in the cell will be run on the DBT RPC server and IPython will out
 %%run_sql
 SELECT ...
 ```
+
+### Copying to clipboard
+
+It is also possible to copy the last result returned by dbt to the clipboard. If that's a `%%compile_sql` compiled query it will return the SQL text but if it's a `%%run_sql` table, it will transform it to CSV and copy that to the clipboard. You can then paste the contents of the clipboard into a spreadsheet as usual.
+
+```
+%dbt_clipboard
+```
