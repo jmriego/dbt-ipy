@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
   name="dbt-ipy",
-  version="0.2.4",
+  version="1.0.0",
   packages=["dbt-ipy"],
   license="GNU GPLv3",
   author="jmriego",
